@@ -45,7 +45,6 @@ class MainViewModelTest {
             Repository("a","b","c","d"))
         Mockito.`when`(this.userService.getRepositories(ArgumentMatchers.anyString())).thenReturn(Maybe.create {
             it.onSuccess(output)
-            it.onComplete()
         })
 
         val observer = mock(Observer::class.java) as Observer<LiveDataResult<List<Repository>>>
@@ -61,7 +60,6 @@ class MainViewModelTest {
     fun getRepositories_error() {
         Mockito.`when`(this.userService.getRepositories(ArgumentMatchers.anyString())).thenReturn(Maybe.create {
             it.onError(SocketException("No network here"))
-            it.onComplete()
         })
 
         val observer = mock(Observer::class.java) as Observer<LiveDataResult<List<Repository>>>
@@ -75,17 +73,39 @@ class MainViewModelTest {
     }
 
     @Test
-    fun setLoadingVisibility() {
+    fun setLoadingVisibility_onSuccess() {
         Mockito.`when`(this.userService.getRepositories(com.nhaarman.mockitokotlin2.any())).thenReturn(Maybe.create {
             it.onSuccess(listOf())
+        })
+
+        val spiedViewModel = com.nhaarman.mockitokotlin2.spy(this.mainViewModel)
+
+        spiedViewModel.getRepositories(ArgumentMatchers.anyString())
+        verify(spiedViewModel, times(2)).setLoadingVisibility(ArgumentMatchers.anyBoolean())
+    }
+
+    @Test
+    fun setLoadingVisibility_onError() {
+        Mockito.`when`(this.userService.getRepositories(com.nhaarman.mockitokotlin2.any())).thenReturn(Maybe.create {
+            it.onError(SocketException())
+        })
+
+        val spiedViewModel = com.nhaarman.mockitokotlin2.spy(this.mainViewModel)
+
+        spiedViewModel.getRepositories(ArgumentMatchers.anyString())
+        verify(spiedViewModel, times(2)).setLoadingVisibility(ArgumentMatchers.anyBoolean())
+    }
+
+    @Test
+    fun setLoadingVisibility_onNoData() {
+        Mockito.`when`(this.userService.getRepositories(com.nhaarman.mockitokotlin2.any())).thenReturn(Maybe.create {
             it.onComplete()
         })
 
-        val observer = mock(Observer::class.java) as Observer<Boolean>
-        this.mainViewModel.loadingLiveData.observeForever(observer)
+        val spiedViewModel = com.nhaarman.mockitokotlin2.spy(this.mainViewModel)
 
-        this.mainViewModel.getRepositories(ArgumentMatchers.anyString())
-
+        spiedViewModel.getRepositories(ArgumentMatchers.anyString())
+        verify(spiedViewModel, times(2)).setLoadingVisibility(ArgumentMatchers.anyBoolean())
     }
 
 }

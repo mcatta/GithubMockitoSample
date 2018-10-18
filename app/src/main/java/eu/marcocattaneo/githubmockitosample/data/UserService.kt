@@ -1,6 +1,5 @@
 package eu.marcocattaneo.githubmockitosample.data
 
-import io.reactivex.Flowable
 import io.reactivex.Maybe
 import retrofit2.http.GET
 import retrofit2.http.Path

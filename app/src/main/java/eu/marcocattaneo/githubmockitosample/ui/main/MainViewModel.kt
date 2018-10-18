@@ -35,6 +35,9 @@ class MainViewModel(
         loadingLiveData.postValue(visible)
     }
 
+    /**
+     * userService.getRepositories() Observer
+     */
     inner class GetRepositoriesConsumer : MaybeObserver<List<Repository>> {
         override fun onSubscribe(d: Disposable) {
             this@MainViewModel.repositoriesLiveData.postValue(LiveDataResult.loading())
@@ -42,10 +45,12 @@ class MainViewModel(
 
         override fun onError(e: Throwable) {
             this@MainViewModel.repositoriesLiveData.postValue(LiveDataResult.error(e))
+            this@MainViewModel.setLoadingVisibility(false)
         }
 
         override fun onSuccess(t: List<Repository>) {
             this@MainViewModel.repositoriesLiveData.postValue(LiveDataResult.succes(t))
+            this@MainViewModel.setLoadingVisibility(false)
         }
 
         override fun onComplete() {
