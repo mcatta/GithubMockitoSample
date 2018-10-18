@@ -39,12 +39,8 @@ class MainViewModelTest {
 
     @Test
     fun getRepositories_positiveResponse() {
-        val output = listOf(
-            Repository("a","b","c","d"),
-            Repository("a","b","c","d"),
-            Repository("a","b","c","d"))
         Mockito.`when`(this.userService.getRepositories(ArgumentMatchers.anyString())).thenAnswer {
-            return@thenAnswer Maybe.just(output)
+            return@thenAnswer Maybe.just(ArgumentMatchers.anyList<Repository>())
         }
 
         val observer = mock(Observer::class.java) as Observer<LiveDataResult<List<Repository>>>
