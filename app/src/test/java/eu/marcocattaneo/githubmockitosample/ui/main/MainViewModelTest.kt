@@ -43,9 +43,9 @@ class MainViewModelTest {
             Repository("a","b","c","d"),
             Repository("a","b","c","d"),
             Repository("a","b","c","d"))
-        Mockito.`when`(this.userService.getRepositories(ArgumentMatchers.anyString())).thenReturn(Maybe.create {
-            it.onSuccess(output)
-        })
+        Mockito.`when`(this.userService.getRepositories(ArgumentMatchers.anyString())).thenAnswer {
+            return@thenAnswer Maybe.just(output)
+        }
 
         val observer = mock(Observer::class.java) as Observer<LiveDataResult<List<Repository>>>
         this.mainViewModel.repositoriesLiveData.observeForever(observer)
@@ -58,9 +58,9 @@ class MainViewModelTest {
 
     @Test
     fun getRepositories_error() {
-        Mockito.`when`(this.userService.getRepositories(ArgumentMatchers.anyString())).thenReturn(Maybe.create {
-            it.onError(SocketException("No network here"))
-        })
+        Mockito.`when`(this.userService.getRepositories(ArgumentMatchers.anyString())).thenAnswer {
+            return@thenAnswer Maybe.error<SocketException>(SocketException("No network here"))
+        }
 
         val observer = mock(Observer::class.java) as Observer<LiveDataResult<List<Repository>>>
         this.mainViewModel.repositoriesLiveData.observeForever(observer)
@@ -74,9 +74,9 @@ class MainViewModelTest {
 
     @Test
     fun setLoadingVisibility_onSuccess() {
-        Mockito.`when`(this.userService.getRepositories(com.nhaarman.mockitokotlin2.any())).thenReturn(Maybe.create {
-            it.onSuccess(listOf())
-        })
+        Mockito.`when`(this.userService.getRepositories(com.nhaarman.mockitokotlin2.any())).thenAnswer {
+            return@thenAnswer Maybe.just(listOf<Repository>())
+        }
 
         val spiedViewModel = com.nhaarman.mockitokotlin2.spy(this.mainViewModel)
 
@@ -86,9 +86,9 @@ class MainViewModelTest {
 
     @Test
     fun setLoadingVisibility_onError() {
-        Mockito.`when`(this.userService.getRepositories(com.nhaarman.mockitokotlin2.any())).thenReturn(Maybe.create {
-            it.onError(SocketException())
-        })
+        Mockito.`when`(this.userService.getRepositories(com.nhaarman.mockitokotlin2.any())).thenAnswer {
+            return@thenAnswer Maybe.error<SocketException>(SocketException())
+        }
 
         val spiedViewModel = com.nhaarman.mockitokotlin2.spy(this.mainViewModel)
 
