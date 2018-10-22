@@ -22,7 +22,7 @@ class MainViewModel(
      * Request user's repositories
      * @param githubUser Github usename
      */
-    fun getRepositories(githubUser: String) {
+    fun fetchUserRepositories(githubUser: String) {
         this.setLoadingVisibility(true)
         this.userService.getRepositories(githubUser).subscribe(GetRepositoriesConsumer())
     }
@@ -36,7 +36,7 @@ class MainViewModel(
     }
 
     /**
-     * userService.getRepositories() Observer
+     * userService.fetchUserRepositories() Observer
      */
     inner class GetRepositoriesConsumer : MaybeObserver<List<Repository>> {
         override fun onSubscribe(d: Disposable) {

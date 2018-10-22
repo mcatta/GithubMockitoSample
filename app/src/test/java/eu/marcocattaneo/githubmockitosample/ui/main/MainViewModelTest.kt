@@ -38,7 +38,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun getRepositories_positiveResponse() {
+    fun fetchRepositories_positiveResponse() {
         Mockito.`when`(this.userService.getRepositories(ArgumentMatchers.anyString())).thenAnswer {
             return@thenAnswer Maybe.just(ArgumentMatchers.anyList<Repository>())
         }
@@ -46,14 +46,14 @@ class MainViewModelTest {
         val observer = mock(Observer::class.java) as Observer<LiveDataResult<List<Repository>>>
         this.mainViewModel.repositoriesLiveData.observeForever(observer)
 
-        this.mainViewModel.getRepositories(ArgumentMatchers.anyString())
+        this.mainViewModel.fetchUserRepositories(ArgumentMatchers.anyString())
 
         assertNotNull(this.mainViewModel.repositoriesLiveData.value)
         assertEquals(LiveDataResult.Status.SUCCESS, this.mainViewModel.repositoriesLiveData.value?.status)
     }
 
     @Test
-    fun getRepositories_error() {
+    fun fetchRepositories_error() {
         Mockito.`when`(this.userService.getRepositories(ArgumentMatchers.anyString())).thenAnswer {
             return@thenAnswer Maybe.error<SocketException>(SocketException("No network here"))
         }
@@ -61,7 +61,7 @@ class MainViewModelTest {
         val observer = mock(Observer::class.java) as Observer<LiveDataResult<List<Repository>>>
         this.mainViewModel.repositoriesLiveData.observeForever(observer)
 
-        this.mainViewModel.getRepositories(ArgumentMatchers.anyString())
+        this.mainViewModel.fetchUserRepositories(ArgumentMatchers.anyString())
 
         assertNotNull(this.mainViewModel.repositoriesLiveData.value)
         assertEquals(LiveDataResult.Status.ERROR, this.mainViewModel.repositoriesLiveData.value?.status)
@@ -76,7 +76,7 @@ class MainViewModelTest {
 
         val spiedViewModel = com.nhaarman.mockitokotlin2.spy(this.mainViewModel)
 
-        spiedViewModel.getRepositories(ArgumentMatchers.anyString())
+        spiedViewModel.fetchUserRepositories(ArgumentMatchers.anyString())
         verify(spiedViewModel, times(2)).setLoadingVisibility(ArgumentMatchers.anyBoolean())
     }
 
@@ -88,7 +88,7 @@ class MainViewModelTest {
 
         val spiedViewModel = com.nhaarman.mockitokotlin2.spy(this.mainViewModel)
 
-        spiedViewModel.getRepositories(ArgumentMatchers.anyString())
+        spiedViewModel.fetchUserRepositories(ArgumentMatchers.anyString())
         verify(spiedViewModel, times(2)).setLoadingVisibility(ArgumentMatchers.anyBoolean())
     }
 
@@ -100,7 +100,7 @@ class MainViewModelTest {
 
         val spiedViewModel = com.nhaarman.mockitokotlin2.spy(this.mainViewModel)
 
-        spiedViewModel.getRepositories(ArgumentMatchers.anyString())
+        spiedViewModel.fetchUserRepositories(ArgumentMatchers.anyString())
         verify(spiedViewModel, times(2)).setLoadingVisibility(ArgumentMatchers.anyBoolean())
     }
 
